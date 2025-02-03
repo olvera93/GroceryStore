@@ -18,16 +18,17 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideHttpClient() = OkHttpClient.Builder()
+    fun provideHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .readTimeout(15, TimeUnit.SECONDS)
         .connectTimeout(15, TimeUnit.SECONDS)
         .build()
 
     @Singleton
     @Provides
-    fun provideGroceryRetrofit(): Retrofit {
+    fun provideGroceryRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -35,6 +36,5 @@ object AppModule {
     @Singleton
     @Provides
     fun provideGroceryApi(retrofit: Retrofit): GroceryApi = retrofit.create(GroceryApi::class.java)
-
 
 }
