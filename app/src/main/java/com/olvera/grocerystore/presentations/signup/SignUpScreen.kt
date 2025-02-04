@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -27,6 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.olvera.grocerystore.components.GroceryTextField
+import com.olvera.grocerystore.components.GroceryTextFieldPassword
 
 @Composable
 fun SignUpScreen(
@@ -36,8 +40,11 @@ fun SignUpScreen(
 
     val signUp by viewModel.signUpResponse.collectAsState()
     val signUpState = viewModel.signUpState
+    val formState = viewModel.formValidationState.value
 
     val focusManager = LocalFocusManager.current
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(key1 = signUp) {
@@ -58,12 +65,15 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             label = "First Name",
             value = signUpState.firstName,
-            onValueChange = { viewModel.updateSignUpState { copy( firstName = it) } },
+            onValueChange = { newValue ->
+                viewModel.updateSignUpState {
+                    copy(firstName = newValue)
+                }
+            },
             placeholder = "Enter your first name",
             isSingleLine = true,
-            isError = false,
-            errorMessage = "",
-            isPassword = false,
+            isError = formState.firstNameError != null,
+            errorMessage = formState.firstNameError ?: "",
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Person, contentDescription = "First Name")
             },
@@ -76,16 +86,16 @@ fun SignUpScreen(
             )
         )
 
+
         GroceryTextField(
             modifier = Modifier.fillMaxWidth(),
             label = "Last Name",
             value = signUpState.lastName,
-            onValueChange = { viewModel.updateSignUpState { copy( lastName = it) } },
+            onValueChange = { viewModel.updateSignUpState { copy(lastName = it) } },
             placeholder = "Enter your last name",
             isSingleLine = true,
-            isError = false,
-            errorMessage = "",
-            isPassword = false,
+            isError = formState.lastNameError != null,
+            errorMessage = formState.lastNameError ?: "",
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Person, contentDescription = "Last Name")
             },
@@ -102,12 +112,11 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             label = "Email",
             value = signUpState.email,
-            onValueChange = { viewModel.updateSignUpState { copy( email = it) } },
+            onValueChange = { viewModel.updateSignUpState { copy(email = it) } },
             placeholder = "Enter your email",
             isSingleLine = true,
-            isError = false,
-            errorMessage = "",
-            isPassword = false,
+            isError = formState.emailError != null,
+            errorMessage = formState.emailError ?: "",
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Email, contentDescription = "Email")
             },
@@ -124,14 +133,16 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             label = "Username",
             value = signUpState.username,
-            onValueChange = { viewModel.updateSignUpState { copy( username = it) } },
+            onValueChange = { viewModel.updateSignUpState { copy(username = it) } },
             placeholder = "Enter your username",
             isSingleLine = true,
-            isError = false,
-            errorMessage = "",
-            isPassword = false,
+            isError = formState.usernameError != null,
+            errorMessage = formState.usernameError ?: "",
             leadingIcon = {
-                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Username")
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Username"
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -142,15 +153,15 @@ fun SignUpScreen(
             )
         )
 
-        GroceryTextField(
+        GroceryTextFieldPassword(
             modifier = Modifier.fillMaxWidth(),
             label = "Password",
             value = signUpState.password,
-            onValueChange = { viewModel.updateSignUpState { copy( password = it) } },
+            onValueChange = { viewModel.updateSignUpState { copy(password = it) } },
             placeholder = "Enter your password",
             isSingleLine = true,
-            isError = false,
-            errorMessage = "",
+            isError = formState.passwordError != null,
+            errorMessage = formState.passwordError ?: "",
             isPassword = true,
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Lock, contentDescription = "Password")
@@ -161,18 +172,20 @@ fun SignUpScreen(
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
+            ),
+            passwordVisible = passwordVisible,
+            onPasswordVisibilityChange = { passwordVisible = it },
         )
 
-        GroceryTextField(
+        GroceryTextFieldPassword(
             modifier = Modifier.fillMaxWidth(),
             label = "Confirm Password",
             value = signUpState.passwordConfirmation,
-            onValueChange = { viewModel.updateSignUpState { copy( passwordConfirmation = it) } },
+            onValueChange = { viewModel.updateSignUpState { copy(passwordConfirmation = it) } },
             placeholder = "Confirm your password",
             isSingleLine = true,
-            isError = false,
-            errorMessage = "",
+            isError = formState.passwordConfirmationError != null,
+            errorMessage = formState.passwordConfirmationError ?: "",
             isPassword = true,
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Lock, contentDescription = "Password")
@@ -183,12 +196,17 @@ fun SignUpScreen(
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
+            ),
+            passwordVisible = confirmPasswordVisible,
+            onPasswordVisibilityChange = { confirmPasswordVisible = it },
         )
 
         Button(
             modifier = Modifier.padding(top = 16.dp),
-            onClick = { viewModel.signUp() }
+            onClick = {
+                viewModel.validateForm()
+                viewModel.submit()
+            }
         ) {
             Text(text = "Sign Up")
         }
