@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.olvera.grocerystore.presentations.onBoarding.OnBoardingScreen
-import com.olvera.grocerystore.presentations.signup.SignUpScreen
+import com.olvera.grocerystore.navigation.NavManager
 import com.olvera.grocerystore.presentations.signup.SignUpViewModel
 import com.olvera.grocerystore.ui.theme.GroceryStoreTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,13 +23,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             GroceryStoreTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    /*SignUpScreen(
+                    NavManager(
                         modifier = Modifier.padding(innerPadding),
-                        viewModel = signUpViewModel
-                    )*/
-
-                    OnBoardingScreen(
-                        modifier = Modifier.padding(innerPadding)
+                        signUpViewModel = signUpViewModel
                     )
                 }
             }

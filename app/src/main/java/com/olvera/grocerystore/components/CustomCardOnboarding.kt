@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -20,10 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.olvera.grocerystore.R
 
 @Composable
-fun CustomCardOnboarding(modifier: Modifier = Modifier) {
+fun CustomCardOnboarding(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
 
     Card {
 
@@ -64,7 +70,9 @@ fun CustomCardOnboarding(modifier: Modifier = Modifier) {
 
             Button(
                 modifier = Modifier.weight(1F),
-                onClick = {},
+                onClick = {
+                    navController.navigate("signUp")
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
 
@@ -80,5 +88,5 @@ fun CustomCardOnboarding(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun CustomCardOnboardingPreview() {
-    CustomCardOnboarding()
+    //CustomCardOnboarding()
 }

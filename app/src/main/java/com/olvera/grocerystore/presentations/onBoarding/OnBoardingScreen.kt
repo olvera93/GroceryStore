@@ -1,6 +1,5 @@
 package com.olvera.grocerystore.presentations.onBoarding
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,21 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.olvera.grocerystore.R
 import com.olvera.grocerystore.components.CustomCardOnboarding
 
 @Composable
-fun OnBoardingScreen(modifier: Modifier = Modifier) {
+fun OnBoardingScreen(modifier: Modifier = Modifier, navController: NavController) {
 
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.grocery))
-    val progress by animateLottieCompositionAsState(composition)
 
     val brush = Brush.verticalGradient(
         colors = listOf(
@@ -41,7 +38,11 @@ fun OnBoardingScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.background(brush = brush)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+
+        ) {
             Spacer(modifier = Modifier.height(35.dp))
 
 
@@ -56,11 +57,14 @@ fun OnBoardingScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(10.dp))
 
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(15.dp)
             ) {
 
-                CustomCardOnboarding()
+                CustomCardOnboarding(
+                    navController = navController
+                )
             }
         }
     }
