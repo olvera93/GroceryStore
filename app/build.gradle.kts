@@ -65,6 +65,9 @@ dependencies {
     // Coil
     implementation(libs.coil.kl)
 
+    // Lottie
+    implementation(libs.airbnb.lottie)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
